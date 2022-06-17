@@ -17,3 +17,13 @@ func TestCreatePerson(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestGetKudos(t *testing.T) {
+	router := setupRouter()
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/kudos", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
