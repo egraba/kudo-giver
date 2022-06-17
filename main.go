@@ -30,14 +30,10 @@ func createPerson(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newPerson)
 }
 
-func setupRouter() *gin.Engine {
-	r := gin.Default()
-	r.GET("/persons", getPersons)
-	r.POST("/persons", createPerson)
-	return r
-}
-
 func main() {
-	router := setupRouter()
+	router := gin.Default()
+	router.GET("/persons", getPersons)
+	router.POST("/persons", createPerson)
+
     router.Run("localhost:8080")
 }
