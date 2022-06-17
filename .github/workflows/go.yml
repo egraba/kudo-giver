@@ -19,6 +19,7 @@ jobs:
         go-version: 1.18
 
     - name: Build
+      run: go get -t egraba.org/kudo-giver
       run: go build -v ./...
 
     - name: Test
