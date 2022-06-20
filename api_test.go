@@ -23,13 +23,13 @@ func TestGetPersons(t *testing.T) {
 func TestCreatePersons(t *testing.T) {
 	router := setupRouter()
 
-	newPerson, err := json.Marshal(person{FirstName: "Titi"})
+	person, err := json.Marshal(Person{FirstName: "Titi"})
 	if err == nil {
 		return
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(newPerson))
+	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -48,13 +48,13 @@ func TestGetKudos(t *testing.T) {
 func TestGiveKudos(t *testing.T) {
 	router := setupRouter()
 
-	newKudo, err := json.Marshal(kudo{SenderID: 1, ReceiverID: 2, Message: "Bedesi"})
+	kudo, err := json.Marshal(Kudo{SenderID: 1, ReceiverID: 2, Message: "Bedesi"})
 	if err == nil {
 		return
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(newKudo))
+	req, _ := http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)

@@ -6,24 +6,24 @@ import (
     "github.com/gin-gonic/gin"
 )
 
-type person struct {
+type Person struct {
 	ID 			int64 	`json:"id"`
 	FirstName 	string	`json:"firstName"`
 }
 
-var persons = []person {
+var persons = []Person {
 	{ID: 1, FirstName: "Eric"},
 	{ID: 2, FirstName: "Yadi"},
 }
 
-type kudo struct {
+type Kudo struct {
 	ID 			int64 	`json:"id"`
 	SenderID 	int64 	`json:"senderId"`
 	ReceiverID 	int64 	`json:"receiverId"`
 	Message		string	`json:"message"`
 }
 
-var kudos = []kudo {
+var kudos = []Kudo {
 	{ID: 1, SenderID: 1, ReceiverID: 2, Message: "Déjà"},
 	{ID: 2, SenderID: 2, ReceiverID: 1, Message: "Mira!"},
 }
@@ -33,14 +33,14 @@ func getPersons(c *gin.Context) {
 }
 
 func createPerson(c *gin.Context) {
-	var newPerson person
+	var person Person
 
-	if err := c.BindJSON(&newPerson); err != nil {
+	if err := c.BindJSON(&person); err != nil {
 		return
 	}
 
-	persons = append(persons, newPerson)
-	c.IndentedJSON(http.StatusCreated, newPerson)
+	persons = append(persons, person)
+	c.IndentedJSON(http.StatusCreated, person)
 }
 
 func getKudos(c *gin.Context) {
@@ -48,14 +48,14 @@ func getKudos(c *gin.Context) {
 }
 
 func giveKudo(c *gin.Context) {
-	var newKudo kudo
+	var kudo Kudo
 
-	if err := c.BindJSON(&newKudo); err != nil {
+	if err := c.BindJSON(&kudo); err != nil {
 		return
 	}
 
-	kudos = append(kudos, newKudo)
-	c.IndentedJSON(http.StatusCreated, newKudo)
+	kudos = append(kudos, kudo)
+	c.IndentedJSON(http.StatusCreated, kudo)
 }
 
 func setupRouter() *gin.Engine {
