@@ -60,6 +60,7 @@ func giveKudo(c *gin.Context) {
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+	r.SetTrustedProxies(nil)
 	
 	r.GET("/persons", getPersons)
 	r.POST("/persons", createPerson)
