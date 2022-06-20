@@ -44,3 +44,18 @@ func TestGetKudos(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestGiveKudos(t *testing.T) {
+	router := setupRouter()
+
+	newKudo, err := json.Marshal(kudo{SenderID: 1, ReceiverID: 2, Message: "Bedesi"})
+	if err == nil {
+		return
+	}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/kudos", bytes.NewBuffer(newKudo))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
