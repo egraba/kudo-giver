@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreatePerson(t *testing.T) {
+func TestGetPersons(t *testing.T) {
 	router := setupRouter()
 
 	w := httptest.NewRecorder()
