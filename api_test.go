@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -16,6 +18,21 @@ func TestGetPersons(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestCreatePersons(t *testing.T) {
+	router := setupRouter()
+
+	newPerson, err := json.Marshal(person{FirstName: "Titi"})
+	if err == nil {
+		return
+	}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/persons", bytes.NewBuffer(newPerson))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
 func TestGetKudos(t *testing.T) {
