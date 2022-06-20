@@ -1,9 +1,9 @@
 package main
 
 import (
-    "net/http"
-    
-    "github.com/gin-gonic/gin"
+	"net/http"
+	
+	"github.com/gin-gonic/gin"
 )
 
 const PersonEndpoint = "/persons"
@@ -76,5 +76,5 @@ func setupRouter() *gin.Engine {
 
 func main() {
 	router := setupRouter()	
-    router.Run("localhost:8080")
+	router.Run("localhost:8080")
 }
