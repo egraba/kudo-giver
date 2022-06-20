@@ -1,10 +1,16 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"net/http"
-	
+	"os"
+
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
+
+const dbUrl = "postgres://devuser:devpwd@localhost:5432/kudo-giver"
 
 const PersonEndpoint = "/persons"
 const KudoEndpoint = "/kudos"
@@ -75,6 +81,14 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	dbpool, err := pgxpool.Connect(context.Background(), dbUrl)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Unable to connect to the database: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Println("Sucessfully connected to the database!")
+	defer dbpool.Close()
+
 	router := setupRouter()	
 	router.Run("localhost:8080")
 }
