@@ -6,6 +6,9 @@ import (
     "github.com/gin-gonic/gin"
 )
 
+const PersonEndpoint = "/persons"
+const KudoEndpoint = "/kudos"
+
 type Person struct {
 	ID 			int64 	`json:"id"`
 	FirstName 	string	`json:"firstName"`
@@ -62,11 +65,11 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
 	
-	r.GET("/persons", getPersons)
-	r.POST("/persons", createPerson)
+	r.GET(PersonEndpoint, getPersons)
+	r.POST(PersonEndpoint, createPerson)
 	
-	r.GET("/kudos", getKudos)
-	r.POST("/kudos", giveKudo)
+	r.GET(KudoEndpoint, getKudos)
+	r.POST(KudoEndpoint, giveKudo)
 
 	return r
 }

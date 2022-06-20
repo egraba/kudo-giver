@@ -14,7 +14,7 @@ func TestGetPersons(t *testing.T) {
 	router := setupRouter()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
+	req, _ := http.NewRequest(http.MethodGet, PersonEndpoint, nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -29,7 +29,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	req, _ := http.NewRequest(http.MethodPost, PersonEndpoint, bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -39,7 +39,7 @@ func TestGetKudos(t *testing.T) {
 	router := setupRouter()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/kudos", nil)
+	req, _ := http.NewRequest(http.MethodGet, KudoEndpoint, nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -54,7 +54,7 @@ func TestGiveKudos(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	req, _ := http.NewRequest(http.MethodPost, KudoEndpoint, bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
