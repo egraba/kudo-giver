@@ -15,23 +15,23 @@ const PersonEndpoint = "/persons"
 const KudoEndpoint = "/kudos"
 
 type Person struct {
-	ID 			int64 	`json:"id"`
-	FirstName 	string	`json:"firstName"`
+	ID        int64  `json:"id"`
+	FirstName string `json:"firstName"`
 }
 
-var persons = []Person {
+var persons = []Person{
 	{ID: 1, FirstName: "Eric"},
 	{ID: 2, FirstName: "Yadi"},
 }
 
 type Kudo struct {
-	ID 			int64 	`json:"id"`
-	SenderID 	int64 	`json:"senderId"`
-	ReceiverID 	int64 	`json:"receiverId"`
-	Message		string	`json:"message"`
+	ID         int64  `json:"id"`
+	SenderID   int64  `json:"senderId"`
+	ReceiverID int64  `json:"receiverId"`
+	Message    string `json:"message"`
 }
 
-var kudos = []Kudo {
+var kudos = []Kudo{
 	{ID: 1, SenderID: 1, ReceiverID: 2, Message: "Déjà"},
 	{ID: 2, SenderID: 2, ReceiverID: 1, Message: "Mira!"},
 }
@@ -69,10 +69,10 @@ func giveKudo(c *gin.Context) {
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
-	
+
 	r.GET(PersonEndpoint, getPersons)
 	r.POST(PersonEndpoint, createPerson)
-	
+
 	r.GET(KudoEndpoint, getKudos)
 	r.POST(KudoEndpoint, giveKudo)
 
@@ -90,6 +90,6 @@ func main() {
 	log.Println("Sucessfully connected to the database!")
 	defer dbpool.Close()
 
-	router := setupRouter()	
+	router := setupRouter()
 	router.Run("localhost:8080")
 }
