@@ -2,9 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -60,7 +59,7 @@ func giveKudo(c *gin.Context) {
 	var kudo Kudo
 
 	if err := c.BindJSON(&kudo); err != nil {
-		return
+		log.Fatal(err)
 	}
 
 	kudos = append(kudos, kudo)
@@ -81,12 +80,14 @@ func setupRouter() *gin.Engine {
 }
 
 func main() {
+	log.SetPrefix("[kudo-giver] ")
+	log.SetFlags(7)
+
 	dbpool, err := pgxpool.Connect(context.Background(), dbUrl)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Unable to connect to the database: %v\n", err)
-		os.Exit(1)
+		log.Fatalf("Unable to connect to the database: %v\n", err)
 	}
-	fmt.Println("Sucessfully connected to the database!")
+	log.Println("Sucessfully connected to the database!")
 	defer dbpool.Close()
 
 	router := setupRouter()	
