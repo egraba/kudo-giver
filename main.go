@@ -85,11 +85,21 @@ func main() {
 	log.SetPrefix("[kudo-giver] ")
 	log.SetFlags(7)
 
-	dbpool, err := pgxpool.Connect(context.Background(), dbUrl)
+	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer dbpool.Close()
+	defer dbPool.Close()
+
+	_, err = dbPool.Query(context.Background(), `CREATE TABLE persons (
+														id INTEGER NOT NULL PRIMARY KEY,
+														first_name VARCHAR(32) NOT NULL,
+														last_name VARCHAR(32) NOT NULL,
+														birth_date DATE NOT NULL
+													);`)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	router := setupRouter()
 	router.Run("localhost:8080")
