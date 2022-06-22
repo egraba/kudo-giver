@@ -17,6 +17,8 @@ const KudoEndpoint = "/kudos"
 type Person struct {
 	ID        int64  `json:"id"`
 	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	BirthDate string `json:"birthDate"`
 }
 
 var persons = []Person{
