@@ -89,7 +89,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println("Sucessfully connected to the database!")
 	defer dbpool.Close()
 
 	router := setupRouter()
