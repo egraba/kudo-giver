@@ -52,6 +52,7 @@ func getPersons(c *gin.Context) {
 			ID:        values[0].(int32),
 			FirstName: values[1].(string),
 			LastName:  values[2].(string),
+			Email:     values[3].(string),
 		}
 
 		persons = append(persons, person)
