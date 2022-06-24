@@ -19,6 +19,7 @@ type Person struct {
 	ID        int32  `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
+	Email string `json:"email"`
 }
 
 var persons = []Person{}
@@ -66,16 +67,17 @@ func createPerson(c *gin.Context) {
 	}
 
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
-	values := fmt.Sprintf("VALUES ('%s', '%s');", person.FirstName, person.LastName)
-	sqlStr := "INSERT INTO persons (first_name, last_name)" + values
+	values := fmt.Sprintf("VALUES ('%s', '%s', '%s');", person.FirstName, person.LastName, person.Email)
+	sqlStr := "INSERT INTO persons (first_name, last_name, email)" + values
 	log.Println(sqlStr)
 	_, err := dbPool.Exec(context.Background(), sqlStr)
 	if err != nil {
 		log.Println(err)
+		c.IndentedJSON(http.StatusBadRequest, err)	
 	}
 
 	persons = append(persons, person)
-	c.IndentedJSON(http.StatusCreated, person)
+	c.Status(http.StatusCreated)
 }
 
 func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
@@ -107,10 +109,11 @@ func main() {
 	defer dbPool.Close()
 
 	_, err = dbPool.Query(context.Background(), `CREATE TABLE persons (
-														id SERIAL PRIMARY KEY NOT NULL,
-														first_name VARCHAR(32) NOT NULL,
-														last_name VARCHAR(32) NOT NULL
-													);`)
+													id SERIAL PRIMARY KEY NOT NULL,
+													first_name VARCHAR(32) NOT NULL,
+													last_name VARCHAR(32) NOT NULL,
+													email VARCHAR(254) UNIQUE NOT NULL
+												);`)
 	if err != nil {
 		log.Fatal(err)
 	}
