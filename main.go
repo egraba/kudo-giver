@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -15,24 +14,6 @@ const dbUrl = "postgres://devuser:devpwd@localhost:5432/kudo-giver"
 
 const PersonEndpoint = "/persons"
 const KudoEndpoint = "/kudos"
-
-type Person struct {
-	ID        int32  `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-}
-
-var persons = []Person{}
-
-type Kudo struct {
-	ID         int64  `json:"id"`
-	SenderID   int64  `json:"senderId"`
-	ReceiverID int64  `json:"receiverId"`
-	Message    string `json:"message"`
-}
-
-var kudos = []Kudo{}
 
 func getPersons(c *gin.Context) {
 	var persons = []Person{}
@@ -89,15 +70,6 @@ func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	}
 }
 
-func readSqlFile(fileName string) string {
-	bytes, err := os.ReadFile(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return string(bytes)
-}
-
 func setupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
@@ -119,7 +91,7 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	_, err = dbPool.Exec(context.Background(), readSqlFile("sql/create_persons_table.sql"))
+	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
 	if err != nil {
 		log.Println(err)
 	}
