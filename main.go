@@ -35,6 +35,7 @@ type Kudo struct {
 var kudos = []Kudo{}
 
 func getPersons(c *gin.Context) {
+	var persons = []Person{}
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
 
 	rows, err := dbPool.Query(context.Background(), "SELECT * FROM persons ORDER BY first_name;")
@@ -77,7 +78,6 @@ func createPerson(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, err)
 	}
 
-	persons = append(persons, person)
 	c.Status(http.StatusCreated)
 }
 
