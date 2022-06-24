@@ -20,10 +20,10 @@ func TestGetPersons(t *testing.T) {
 	}
 	defer dbPool.Close()
 
-	router := setupRouter(dbPool)
+	router := SetupRouter(dbPool)
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, PersonEndpoint, nil)
+	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -36,7 +36,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 	defer dbPool.Close()
 
-	router := setupRouter(dbPool)
+	router := SetupRouter(dbPool)
 
 	person, err := json.Marshal(Person{FirstName: "Titi"})
 	if err == nil {
@@ -44,7 +44,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, PersonEndpoint, bytes.NewBuffer(person))
+	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)

@@ -12,9 +12,6 @@ import (
 
 const dbUrl = "postgres://devuser:devpwd@localhost:5432/kudo-giver"
 
-const PersonEndpoint = "/persons"
-const KudoEndpoint = "/kudos"
-
 func getPersons(c *gin.Context) {
 	var persons = []Person{}
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
@@ -70,17 +67,6 @@ func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	}
 }
 
-func setupRouter(dbPool *pgxpool.Pool) *gin.Engine {
-	r := gin.Default()
-	r.SetTrustedProxies(nil)
-	r.Use(connectDb(dbPool))
-
-	r.GET(PersonEndpoint, getPersons)
-	r.POST(PersonEndpoint, createPerson)
-
-	return r
-}
-
 func main() {
 	log.SetPrefix("[kudo-giver] ")
 	log.SetFlags(7)
@@ -96,6 +82,6 @@ func main() {
 		log.Println(err)
 	}
 
-	router := setupRouter(dbPool)
+	router := SetupRouter(dbPool)
 	router.Run("localhost:8080")
 }
