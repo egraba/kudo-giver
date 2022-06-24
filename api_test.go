@@ -2,16 +2,25 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetPersons(t *testing.T) {
-	router := setupRouter()
+	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbPool.Close()
+
+	router := setupRouter(dbPool)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, PersonEndpoint, nil)
@@ -21,7 +30,13 @@ func TestGetPersons(t *testing.T) {
 }
 
 func TestCreatePersons(t *testing.T) {
-	router := setupRouter()
+	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbPool.Close()
+
+	router := setupRouter(dbPool)
 
 	person, err := json.Marshal(Person{FirstName: "Titi"})
 	if err == nil {
@@ -36,7 +51,13 @@ func TestCreatePersons(t *testing.T) {
 }
 
 func TestGetKudos(t *testing.T) {
-	router := setupRouter()
+	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbPool.Close()
+
+	router := setupRouter(dbPool)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, KudoEndpoint, nil)
@@ -46,7 +67,13 @@ func TestGetKudos(t *testing.T) {
 }
 
 func TestGiveKudos(t *testing.T) {
-	router := setupRouter()
+	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer dbPool.Close()
+
+	router := setupRouter(dbPool)
 
 	kudo, err := json.Marshal(Kudo{SenderID: 1, ReceiverID: 2, Message: "Bedesi"})
 	if err == nil {

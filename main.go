@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -15,10 +16,10 @@ const PersonEndpoint = "/persons"
 const KudoEndpoint = "/kudos"
 
 type Person struct {
-	ID        int64  `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	BirthDate string `json:"birthDate"`
+	ID        int64     `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	BirthDate time.Time `json:"birthDate"`
 }
 
 var persons = []Person{
@@ -39,6 +40,28 @@ var kudos = []Kudo{
 }
 
 func getPersons(c *gin.Context) {
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+
+	rows, err := dbPool.Query(context.Background(), "SELECT * FROM persons ORDER BY first_name;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var person = Person{
+			ID:        values[0].(int64),
+			FirstName: values[1].(string),
+			LastName:  values[2].(string),
+			BirthDate: values[3].(time.Time),
+		}
+
+		persons = append(persons, person)
+	}
+
 	c.IndentedJSON(http.StatusOK, persons)
 }
 
@@ -68,9 +91,17 @@ func giveKudo(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, kudo)
 }
 
-func setupRouter() *gin.Engine {
+func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Set("dbConnection", dbPool)
+		c.Next()
+	}
+}
+
+func setupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
+	r.Use(connectDb(dbPool))
 
 	r.GET(PersonEndpoint, getPersons)
 	r.POST(PersonEndpoint, createPerson)
@@ -101,6 +132,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	router := setupRouter()
+	router := setupRouter(dbPool)
 	router.Run("localhost:8080")
 }
