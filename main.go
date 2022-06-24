@@ -108,7 +108,7 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	_, err = dbPool.Query(context.Background(), `CREATE TABLE persons (
+	_, err = dbPool.Exec(context.Background(), `CREATE TABLE persons (
 													id SERIAL PRIMARY KEY NOT NULL,
 													first_name VARCHAR(32) NOT NULL,
 													last_name VARCHAR(32) NOT NULL,
