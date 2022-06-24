@@ -73,21 +73,6 @@ func createPerson(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, person)
 }
 
-func getKudos(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, kudos)
-}
-
-func giveKudo(c *gin.Context) {
-	var kudo Kudo
-
-	if err := c.BindJSON(&kudo); err != nil {
-		log.Fatal(err)
-	}
-
-	kudos = append(kudos, kudo)
-	c.IndentedJSON(http.StatusCreated, kudo)
-}
-
 func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("dbConnection", dbPool)
@@ -102,9 +87,6 @@ func setupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 
 	r.GET(PersonEndpoint, getPersons)
 	r.POST(PersonEndpoint, createPerson)
-
-	r.GET(KudoEndpoint, getKudos)
-	r.POST(KudoEndpoint, giveKudo)
 
 	return r
 }
