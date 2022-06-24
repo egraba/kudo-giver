@@ -19,7 +19,7 @@ type Person struct {
 	ID        int32  `json:"id"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
-	Email string `json:"email"`
+	Email     string `json:"email"`
 }
 
 var persons = []Person{}
@@ -73,7 +73,7 @@ func createPerson(c *gin.Context) {
 	_, err := dbPool.Exec(context.Background(), sqlStr)
 	if err != nil {
 		log.Println(err)
-		c.IndentedJSON(http.StatusBadRequest, err)	
+		c.IndentedJSON(http.StatusBadRequest, err)
 	}
 
 	persons = append(persons, person)
