@@ -22,10 +22,7 @@ type Person struct {
 	BirthDate time.Time `json:"birthDate"`
 }
 
-var persons = []Person{
-	{ID: 1, FirstName: "Eric"},
-	{ID: 2, FirstName: "Yadi"},
-}
+var persons = []Person{}
 
 type Kudo struct {
 	ID         int64  `json:"id"`
