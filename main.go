@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -87,6 +88,15 @@ func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	}
 }
 
+func readSqlFile(fileName string) string {
+	bytes, err := os.ReadFile(fileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return string(bytes)
+}
+
 func setupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 	r := gin.Default()
 	r.SetTrustedProxies(nil)
@@ -108,14 +118,9 @@ func main() {
 	}
 	defer dbPool.Close()
 
-	_, err = dbPool.Exec(context.Background(), `CREATE TABLE persons (
-													id SERIAL PRIMARY KEY NOT NULL,
-													first_name VARCHAR(32) NOT NULL,
-													last_name VARCHAR(32) NOT NULL,
-													email VARCHAR(254) UNIQUE NOT NULL
-												);`)
+	_, err = dbPool.Exec(context.Background(), readSqlFile("sql/create_persons_table.sql"))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	router := setupRouter(dbPool)
