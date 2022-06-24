@@ -30,10 +30,7 @@ type Kudo struct {
 	Message    string `json:"message"`
 }
 
-var kudos = []Kudo{
-	{ID: 1, SenderID: 1, ReceiverID: 2, Message: "Déjà"},
-	{ID: 2, SenderID: 2, ReceiverID: 1, Message: "Mira!"},
-}
+var kudos = []Kudo{}
 
 func getPersons(c *gin.Context) {
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
