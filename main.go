@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -16,10 +16,9 @@ const PersonEndpoint = "/persons"
 const KudoEndpoint = "/kudos"
 
 type Person struct {
-	ID        int64     `json:"id"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	BirthDate time.Time `json:"birthDate"`
+	ID        int32  `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
 }
 
 var persons = []Person{}
@@ -50,10 +49,9 @@ func getPersons(c *gin.Context) {
 		}
 
 		var person = Person{
-			ID:        values[0].(int64),
+			ID:        values[0].(int32),
 			FirstName: values[1].(string),
 			LastName:  values[2].(string),
-			BirthDate: values[3].(time.Time),
 		}
 
 		persons = append(persons, person)
@@ -66,7 +64,17 @@ func createPerson(c *gin.Context) {
 	var person Person
 
 	if err := c.BindJSON(&person); err != nil {
+		log.Println(err)
 		return
+	}
+
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+	values := fmt.Sprintf("VALUES ('%s', '%s');", person.FirstName, person.LastName)
+	sqlStr := "INSERT INTO persons (first_name, last_name)" + values
+	log.Println(sqlStr)
+	_, err := dbPool.Exec(context.Background(), sqlStr)
+	if err != nil {
+		log.Println(err)
 	}
 
 	persons = append(persons, person)
@@ -102,10 +110,9 @@ func main() {
 	defer dbPool.Close()
 
 	_, err = dbPool.Query(context.Background(), `CREATE TABLE persons (
-														id INTEGER NOT NULL PRIMARY KEY,
+														id SERIAL PRIMARY KEY NOT NULL,
 														first_name VARCHAR(32) NOT NULL,
-														last_name VARCHAR(32) NOT NULL,
-														birth_date DATE NOT NULL
+														last_name VARCHAR(32) NOT NULL
 													);`)
 	if err != nil {
 		log.Fatal(err)
