@@ -10,8 +10,8 @@ func SetupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 	router.SetTrustedProxies(nil)
 	router.Use(connectDb(dbPool))
 
-	router.GET("/persons", getPersons)
-	router.POST("/persons", createPerson)
+	router.GET("/persons", GetPersons)
+	router.POST("/persons", CreatePerson)
 
 	return router
 }
