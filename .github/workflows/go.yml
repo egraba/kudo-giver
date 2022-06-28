@@ -7,9 +7,14 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postegres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+
     steps:
     - uses: actions/checkout@v3
 
@@ -26,6 +31,9 @@ jobs:
 
     - name: Test
       run: go test -v ./...
+      env:
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
 
     - name: Examine source code
       run: go vet ./...
