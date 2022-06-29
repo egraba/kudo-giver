@@ -26,6 +26,11 @@ func TestGetPersons(t *testing.T) {
 	}
 	defer dbPool.Close()
 
+	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
+	if err != nil {
+		log.Println(err)
+	}
+
 	router := SetupRouter(dbPool)
 
 	w := httptest.NewRecorder()
@@ -41,6 +46,11 @@ func TestCreatePersons(t *testing.T) {
 		log.Fatal(err)
 	}
 	defer dbPool.Close()
+
+	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
+	if err != nil {
+		log.Println(err)
+	}
 
 	router := SetupRouter(dbPool)
 
