@@ -7,4 +7,4 @@ postgres:
   port: 5432
   database: kudo-giver
   user: devuser
-  password: devepwd 
+  password: devpwd 

@@ -13,7 +13,7 @@ jobs:
       postgres:
         image: postgres:14.4
         env:
-          POSTGRES_PASSWORD: postgres
+          ENVIRONMENT: pre
 
     steps:
     - uses: actions/checkout@v3
@@ -31,9 +31,6 @@ jobs:
 
     - name: Test
       run: go test -v ./...
-      env:
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
 
     - name: Examine source code
       run: go vet ./...
