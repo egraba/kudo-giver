@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/spf13/viper"
@@ -12,7 +13,7 @@ import (
 var dbUrl string
 
 func initConfig() {
-	viper.SetConfigName("config-dev")
+	viper.SetConfigName(fmt.Sprintf("config-%s", os.Getenv("ENVIRONMENT")))
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./config")
 	if err := viper.ReadInConfig(); err != nil {
