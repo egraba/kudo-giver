@@ -2,12 +2,21 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
-const dbUrl = "postgres://devuser:devpwd@localhost:5432/kudo-giver"
+const (
+	HOST     = "localhost"
+	PORT     = 5432
+	DATABASE = "kudo-giver"
+	USER     = "devuser"
+	PASSWORD = "devpwd"
+)
+
+var dbUrl = fmt.Sprintf("postgres://%s:%s@%s:%d/%s", USER, PASSWORD, HOST, PORT, DATABASE)
 
 func main() {
 	log.SetPrefix("[kudo-giver] ")
