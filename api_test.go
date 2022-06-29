@@ -7,11 +7,17 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMain(m *testing.M) {
+	initConfig()
+	os.Exit(m.Run())
+}
 
 func TestGetPersons(t *testing.T) {
 	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
