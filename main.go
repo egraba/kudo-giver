@@ -6,21 +6,34 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/spf13/viper"
 )
 
-const (
-	HOST     = "localhost"
-	PORT     = 5432
-	DATABASE = "kudo-giver"
-	USER     = "devuser"
-	PASSWORD = "devpwd"
-)
+var dbUrl string
 
-var dbUrl = fmt.Sprintf("postgres://%s:%s@%s:%d/%s", USER, PASSWORD, HOST, PORT, DATABASE)
+func initConfig() {
+	viper.SetConfigName("config-dev")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath("./config")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Logging config
+	log.SetPrefix(viper.Get("log.prefix").(string))
+	log.SetFlags(viper.Get("log.flags").(int))
+
+	// DB config
+	dbUrl = fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+		viper.Get("postgres.user"),
+		viper.Get("postgres.password"),
+		viper.Get("postgres.host"),
+		viper.Get("postgres.port"),
+		viper.Get("postgres.database"))
+}
 
 func main() {
-	log.SetPrefix("[kudo-giver] ")
-	log.SetFlags(7)
+	initConfig()
 
 	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
 	if err != nil {

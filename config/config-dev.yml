@@ -1,0 +1,10 @@
+log:
+  prefix: "[kudo-giver] "
+  flags: 7
+
+postgres:
+  host: localhost
+  port: 5432
+  database: kudo-giver
+  user: devuser
+  password: devepwd 
