@@ -16,7 +16,9 @@ jobs:
       postgres:
         image: postgres:14.4
         env:
-          ENVIRONMENT: pre
+          POSTGRES_USER: preuser
+          POSTGRES_PASSWORD: prepwd
+          POSTGRES_DB: kudo-giver
 
     steps:
     - uses: actions/checkout@v3
