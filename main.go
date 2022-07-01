@@ -11,6 +11,7 @@ import (
 )
 
 var dbUrl string
+var dbPool *pgxpool.Pool
 
 func initConfig() {
 	viper.SetConfigName(fmt.Sprintf("config-%s", os.Getenv("ENVIRONMENT")))
@@ -33,19 +34,24 @@ func initConfig() {
 		viper.Get("postgres.database"))
 }
 
-func main() {
-	initConfig()
+func initDB() {
+	var err error
 
-	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
+	dbPool, err = pgxpool.Connect(context.Background(), dbUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer dbPool.Close()
 
 	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+func main() {
+	initConfig()
+	initDB()
+	defer dbPool.Close()
 
 	router := SetupRouter(dbPool)
 	router.Run("localhost:8080")

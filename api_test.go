@@ -2,37 +2,29 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
 
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+var router *gin.Engine
+
 func TestMain(m *testing.M) {
 	initConfig()
+	initDB()
+	defer dbPool.Close()
+
+	router = SetupRouter(dbPool)
+
 	os.Exit(m.Run())
 }
 
 func TestGetPersons(t *testing.T) {
-	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer dbPool.Close()
-
-	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
-	if err != nil {
-		log.Println(err)
-	}
-
-	router := SetupRouter(dbPool)
-
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
 	router.ServeHTTP(w, req)
@@ -41,19 +33,6 @@ func TestGetPersons(t *testing.T) {
 }
 
 func TestCreatePersons(t *testing.T) {
-	dbPool, err := pgxpool.Connect(context.Background(), dbUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer dbPool.Close()
-
-	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
-	if err != nil {
-		log.Println(err)
-	}
-
-	router := SetupRouter(dbPool)
-
 	person, err := json.Marshal(Person{FirstName: "Titi"})
 	if err == nil {
 		return
