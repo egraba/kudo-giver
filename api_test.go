@@ -39,6 +39,14 @@ func TestGetPersons(t *testing.T) {
 	assert.IsType(t, Person{}, persons[0])
 }
 
+func TestGetPersonById(t *testing.T) {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/persons/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
+
 func TestCreatePersons(t *testing.T) {
 	person, err := json.Marshal(Person{FirstName: "Titi"})
 	if err != nil {

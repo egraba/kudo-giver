@@ -44,6 +44,35 @@ func GetPersons(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, persons)
 }
 
+func GetPersonById(c *gin.Context) {
+	var person Person
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+
+	personId := c.Param("id")
+	sqlStr := fmt.Sprintf("SELECT * FROM persons WHERE id = %s;", personId)
+	log.Println(sqlStr)
+	rows, err := dbPool.Query(context.Background(), sqlStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		person = Person{
+			ID:        values[0].(int32),
+			FirstName: values[1].(string),
+			LastName:  values[2].(string),
+			Email:     values[3].(string),
+		}
+		c.IndentedJSON(http.StatusOK, person)
+	}
+	c.Status(http.StatusNotFound)
+}
+
 func CreatePerson(c *gin.Context) {
 	var person Person
 
