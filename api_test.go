@@ -48,13 +48,38 @@ func TestGetPersonById(t *testing.T) {
 }
 
 func TestCreatePersons(t *testing.T) {
-	person, err := json.Marshal(Person{FirstName: "Titi"})
+	// Nominal case
+	person, err := json.Marshal(Person{FirstName: "John", LastName: "Doe", Email: "john.doe@email.com"})
 	if err != nil {
 		return
 	}
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	// Email is the same
+	person, err = json.Marshal(Person{FirstName: "John", LastName: "Doe", Email: "john.doe@email.com"})
+	if err != nil {
+		return
+	}
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	// Email is different
+	person, err = json.Marshal(Person{FirstName: "John", LastName: "Doe", Email: "johndoe@email.com"})
+	if err != nil {
+		return
+	}
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
