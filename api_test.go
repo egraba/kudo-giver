@@ -40,8 +40,26 @@ func TestGetPersons(t *testing.T) {
 }
 
 func TestGetPersonById(t *testing.T) {
+	// Create a new person
+	person, err := json.Marshal(Person{FirstName: "John", LastName: "Smith", Email: "john.smith@email.com"})
+	if err != nil {
+		return
+	}
+
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/persons/1", nil)
+	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	router.ServeHTTP(w, req)
+
+	// Person exists
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/persons/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	// Person doesn't exist
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/persons/2", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
