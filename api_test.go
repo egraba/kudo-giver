@@ -30,13 +30,6 @@ func TestGetPersons(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-
-	var persons []Person
-	err := json.Unmarshal([]byte(w.Body.String()), persons)
-	if err != nil {
-		return
-	}
-	assert.IsType(t, Person{}, persons[0])
 }
 
 func TestGetPersonById(t *testing.T) {
