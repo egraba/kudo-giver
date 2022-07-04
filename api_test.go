@@ -24,40 +24,6 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestGetPersons(t *testing.T) {
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, http.StatusOK, w.Code)
-}
-
-func TestGetPersonById(t *testing.T) {
-	// Create a new person
-	person, err := json.Marshal(Person{FirstName: "John", LastName: "Smith", Email: "john.smith@email.com"})
-	if err != nil {
-		return
-	}
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
-	router.ServeHTTP(w, req)
-
-	// Person exists
-	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodGet, "/persons/1", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, http.StatusOK, w.Code)
-
-	// Person doesn't exist
-	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodGet, "/persons/2", nil)
-	router.ServeHTTP(w, req)
-
-	assert.Equal(t, http.StatusNotFound, w.Code)
-}
-
 func TestCreatePersons(t *testing.T) {
 	// Nominal case
 	person, err := json.Marshal(Person{FirstName: "John", LastName: "Doe", Email: "john.doe@email.com"})
@@ -94,4 +60,28 @@ func TestCreatePersons(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
+}
+
+func TestGetPersons(t *testing.T) {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestGetPersonById(t *testing.T) {
+	// Person exists
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/persons/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	// Person doesn't exist
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/persons/10000", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
 }
