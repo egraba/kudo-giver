@@ -114,3 +114,30 @@ func GiveKudo(c *gin.Context) {
 
 	c.Status(http.StatusCreated)
 }
+
+func GetKudos(c *gin.Context) {
+	var kudos = []Kudo{}
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+
+	rows, err := dbPool.Query(context.Background(), "SELECT * FROM kudos ORDER BY id;")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		var kudo = Kudo{
+			ID:         values[0].(int32),
+			SenderID:   values[1].(int32),
+			ReceiverID: values[2].(int32),
+			Message:    values[3].(string),
+		}
+
+		kudos = append(kudos, kudo)
+	}
+
+	c.IndentedJSON(http.StatusOK, kudos)
+}
