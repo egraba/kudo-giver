@@ -17,6 +17,27 @@ func connectDb(dbPool *pgxpool.Pool) gin.HandlerFunc {
 	}
 }
 
+func CreatePerson(c *gin.Context) {
+	var person Person
+
+	if err := c.BindJSON(&person); err != nil {
+		log.Println(err)
+		return
+	}
+
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+	values := fmt.Sprintf("VALUES ('%s', '%s', '%s');", person.FirstName, person.LastName, person.Email)
+	sqlStr := "INSERT INTO persons (first_name, last_name, email)" + values
+	log.Println(sqlStr)
+	_, err := dbPool.Exec(context.Background(), sqlStr)
+	if err != nil {
+		log.Println(err)
+		c.IndentedJSON(http.StatusBadRequest, err)
+	}
+
+	c.Status(http.StatusCreated)
+}
+
 func GetPersons(c *gin.Context) {
 	var persons = []Person{}
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
@@ -73,17 +94,17 @@ func GetPersonById(c *gin.Context) {
 	c.Status(http.StatusNotFound)
 }
 
-func CreatePerson(c *gin.Context) {
-	var person Person
+func GiveKudo(c *gin.Context) {
+	var kudo Kudo
 
-	if err := c.BindJSON(&person); err != nil {
+	if err := c.BindJSON(&kudo); err != nil {
 		log.Println(err)
 		return
 	}
 
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
-	values := fmt.Sprintf("VALUES ('%s', '%s', '%s');", person.FirstName, person.LastName, person.Email)
-	sqlStr := "INSERT INTO persons (first_name, last_name, email)" + values
+	values := fmt.Sprintf("VALUES ('%d', '%d', '%s');", kudo.SenderID, kudo.ReceiverID, kudo.Message)
+	sqlStr := "INSERT INTO kudos (sender_id, receiver_id, message)" + values
 	log.Println(sqlStr)
 	_, err := dbPool.Exec(context.Background(), sqlStr)
 	if err != nil {

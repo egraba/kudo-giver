@@ -42,11 +42,7 @@ func initDB() {
 		log.Fatal(err)
 	}
 
-	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/drop_persons_table.sql"))
-	if err != nil {
-		log.Println(err)
-	}
-	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_persons_table.sql"))
+	_, err = dbPool.Exec(context.Background(), ReadSqlFile("sql/create_tables.sql"))
 	if err != nil {
 		log.Println(err)
 	}
