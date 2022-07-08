@@ -16,6 +16,7 @@ func SetupRouter(dbPool *pgxpool.Pool) *gin.Engine {
 
 	router.POST("/kudos", GiveKudo)
 	router.GET("/kudos", GetKudos)
+	router.GET("/kudos/:id", GetKudoById)
 
 	return router
 }

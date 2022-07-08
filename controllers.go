@@ -141,3 +141,32 @@ func GetKudos(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, kudos)
 }
+
+func GetKudoById(c *gin.Context) {
+	var kudo Kudo
+	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
+
+	kudoId := c.Param("id")
+	sqlStr := fmt.Sprintf("SELECT * FROM kudos WHERE id = %s;", kudoId)
+	log.Println(sqlStr)
+	rows, err := dbPool.Query(context.Background(), sqlStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		values, err := rows.Values()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		kudo = Kudo{
+			ID:         values[0].(int32),
+			SenderID:   values[1].(int32),
+			ReceiverID: values[2].(int32),
+			Message:    values[3].(string),
+		}
+		c.IndentedJSON(http.StatusOK, kudo)
+	}
+	c.Status(http.StatusNotFound)
+}
