@@ -5,6 +5,7 @@ type Person struct {
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Email     string `json:"email"`
+	NbKudos   int32  `json:"nbKudos"`
 }
 
 type Kudo struct {

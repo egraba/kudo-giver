@@ -57,6 +57,7 @@ func GetPersons(c *gin.Context) {
 			FirstName: values[1].(string),
 			LastName:  values[2].(string),
 			Email:     values[3].(string),
+			NbKudos:   values[4].(int32),
 		}
 
 		persons = append(persons, person)
@@ -88,6 +89,7 @@ func GetPersonById(c *gin.Context) {
 			FirstName: values[1].(string),
 			LastName:  values[2].(string),
 			Email:     values[3].(string),
+			NbKudos:   values[4].(int32),
 		}
 		c.IndentedJSON(http.StatusOK, person)
 	}
@@ -112,6 +114,14 @@ func GiveKudo(c *gin.Context) {
 	sqlStr := "INSERT INTO kudos (sender_id, receiver_id, message)" + values
 	log.Println(sqlStr)
 	_, err := dbPool.Exec(context.Background(), sqlStr)
+	if err != nil {
+		log.Println(err)
+		c.IndentedJSON(http.StatusBadRequest, err)
+	}
+
+	sqlStr = fmt.Sprintf("UPDATE persons SET nb_kudos = nb_kudos+1 WHERE id = %d", kudo.ReceiverID)
+	log.Println(sqlStr)
+	_, err = dbPool.Exec(context.Background(), sqlStr)
 	if err != nil {
 		log.Println(err)
 		c.IndentedJSON(http.StatusBadRequest, err)
