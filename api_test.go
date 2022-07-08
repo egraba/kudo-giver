@@ -135,6 +135,16 @@ func TestGiveKudo(t *testing.T) {
 
 	assert.Equal(t, http.StatusForbidden, w.Code)
 
+	// Person's number of kudos is incremented
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/api/v1/persons/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var person Person
+	json.Unmarshal(w.Body.Bytes(), &person)
+	assert.Equal(t, int32(1), person.NbKudos)
 }
 
 func TestGetKudos(t *testing.T) {
