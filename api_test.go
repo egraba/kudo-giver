@@ -85,3 +85,54 @@ func TestGetPersonById(t *testing.T) {
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
+
+func TestGiveKudo(t *testing.T) {
+	// Nominal case
+	kudo, err := json.Marshal(Kudo{SenderID: 1, ReceiverID: 3, Message: "Awesome!"})
+	if err != nil {
+		return
+	}
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	// Receiver doesn't exist
+	kudo, err = json.Marshal(Kudo{SenderID: 1, ReceiverID: 2, Message: "Awesome!"})
+	if err != nil {
+		return
+	}
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	// Sender doesn't exist
+	kudo, err = json.Marshal(Kudo{SenderID: 1000, ReceiverID: 1, Message: "Awesome!"})
+	if err != nil {
+		return
+	}
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	// Self kudos are not allowed
+	kudo, err = json.Marshal(Kudo{SenderID: 1, ReceiverID: 1, Message: "Awesome!"})
+	if err != nil {
+		return
+	}
+
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusForbidden, w.Code)
+
+}

@@ -102,6 +102,11 @@ func GiveKudo(c *gin.Context) {
 		return
 	}
 
+	if kudo.SenderID == kudo.ReceiverID {
+		c.Status(http.StatusForbidden)
+		return
+	}
+
 	dbPool := c.MustGet("dbConnection").(*pgxpool.Pool)
 	values := fmt.Sprintf("VALUES ('%d', '%d', '%s');", kudo.SenderID, kudo.ReceiverID, kudo.Message)
 	sqlStr := "INSERT INTO kudos (sender_id, receiver_id, message)" + values
