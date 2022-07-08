@@ -144,3 +144,19 @@ func TestGetKudos(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 }
+
+func TestGetKudoById(t *testing.T) {
+	// Kudo exists
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/kudos/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	// Kudo doesn't exist
+	w = httptest.NewRecorder()
+	req, _ = http.NewRequest(http.MethodGet, "/persons/10000", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotFound, w.Code)
+}
