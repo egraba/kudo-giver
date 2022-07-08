@@ -136,3 +136,11 @@ func TestGiveKudo(t *testing.T) {
 	assert.Equal(t, http.StatusForbidden, w.Code)
 
 }
+
+func TestGetKudos(t *testing.T) {
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/kudos", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
