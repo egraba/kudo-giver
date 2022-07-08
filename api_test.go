@@ -32,7 +32,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	req, _ := http.NewRequest(http.MethodPost, "/api/v1/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -44,7 +44,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	req, _ = http.NewRequest(http.MethodPost, "/api/v1/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
@@ -56,7 +56,7 @@ func TestCreatePersons(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodPost, "/persons", bytes.NewBuffer(person))
+	req, _ = http.NewRequest(http.MethodPost, "/api/v1/persons", bytes.NewBuffer(person))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -64,7 +64,7 @@ func TestCreatePersons(t *testing.T) {
 
 func TestGetPersons(t *testing.T) {
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/persons", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/api/v1/persons", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -73,14 +73,14 @@ func TestGetPersons(t *testing.T) {
 func TestGetPersonById(t *testing.T) {
 	// Person exists
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/persons/1", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/api/v1/persons/1", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// Person doesn't exist
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodGet, "/persons/10000", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/api/v1/persons/10000", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
@@ -94,7 +94,7 @@ func TestGiveKudo(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	req, _ := http.NewRequest(http.MethodPost, "/api/v1/kudos", bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
@@ -106,7 +106,7 @@ func TestGiveKudo(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	req, _ = http.NewRequest(http.MethodPost, "/api/v1/kudos", bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
@@ -118,7 +118,7 @@ func TestGiveKudo(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	req, _ = http.NewRequest(http.MethodPost, "/api/v1/kudos", bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
@@ -130,7 +130,7 @@ func TestGiveKudo(t *testing.T) {
 	}
 
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodPost, "/kudos", bytes.NewBuffer(kudo))
+	req, _ = http.NewRequest(http.MethodPost, "/api/v1/kudos", bytes.NewBuffer(kudo))
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusForbidden, w.Code)
@@ -139,7 +139,7 @@ func TestGiveKudo(t *testing.T) {
 
 func TestGetKudos(t *testing.T) {
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/kudos", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/api/v1/kudos", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
@@ -148,14 +148,14 @@ func TestGetKudos(t *testing.T) {
 func TestGetKudoById(t *testing.T) {
 	// Kudo exists
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest(http.MethodGet, "/kudos/1", nil)
+	req, _ := http.NewRequest(http.MethodGet, "/api/v1/kudos/1", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	// Kudo doesn't exist
 	w = httptest.NewRecorder()
-	req, _ = http.NewRequest(http.MethodGet, "/persons/10000", nil)
+	req, _ = http.NewRequest(http.MethodGet, "/api/v1/persons/10000", nil)
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)

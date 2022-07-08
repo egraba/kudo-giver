@@ -6,17 +6,20 @@ import (
 )
 
 func SetupRouter(dbPool *pgxpool.Pool) *gin.Engine {
-	router := gin.Default()
-	router.SetTrustedProxies(nil)
-	router.Use(connectDb(dbPool))
+	r := gin.Default()
+	r.SetTrustedProxies(nil)
+	r.Use(connectDb(dbPool))
 
-	router.POST("/persons", CreatePerson)
-	router.GET("/persons", GetPersons)
-	router.GET("/persons/:id", GetPersonById)
+	v1 := r.Group("api/v1")
+	{
+		v1.POST("/persons", CreatePerson)
+		v1.GET("/persons", GetPersons)
+		v1.GET("/persons/:id", GetPersonById)
 
-	router.POST("/kudos", GiveKudo)
-	router.GET("/kudos", GetKudos)
-	router.GET("/kudos/:id", GetKudoById)
+		v1.POST("/kudos", GiveKudo)
+		v1.GET("/kudos", GetKudos)
+		v1.GET("/kudos/:id", GetKudoById)
+	}
 
-	return router
+	return r
 }
